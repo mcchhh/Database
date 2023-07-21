@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>Adventures In Code</title>
+
+</head>
+<body>    
+    <!-- This is the home page title and the author name -->
+    <h1>Adventures In Code</h1>
+    <h3>a beginner's journey</h3>
+    <h4><i><b>Michelle Beth</b></i></h4>
+    <br>
+
+
+    <h2>Draft Articles</h2>
+    <table>
+        <thead>
+            <tr>
+                <!-- <th>ID</th> -->
+                <th>Title</th>
+                <th>Subtitle</th>
+                <th>Created</th>
+                <th>Last modified</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+          <% articles.forEach(article => { %>
+            <tr>
+              <!-- <td><%= article.article_id %></td> -->
+              <td><%= article.article_title %></td>
+              <td><%= article.article_subtitle %></td>
+              <td><%= article.article_created %></td>
+              <td><%= article.article_last_modified %></td>
+              <td>
+                <!-- <a class="button" href="<%= '/edit-article/'+ article.article_id %>">Edit</a> -->
+                <a class="button" href="/author/edit-article/<%= article.article_id %>">Edit</a>
+
+                <a class="button" href="<%= '/delete/' + article.article_id %>">Delete</a>
+                <a class="button" href="<%= '/publish/' + article.article_id %>">Publish</a>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+        
+    
+        <!-- <form action="/another-page" method="post">
+            <button type="submit">Edit</button>
+          </form> -->
+          
+
+    </table>
+    <br> 
+    <br> 
+
+    <form action="/another-page" method="POST">
+      <input type="hidden" name="article_created" value="<%= format(new Date(), 'yyyy-MM-dd HH:mm:ss') %>">
+      <!-- Other form fields for article details -->
+      <button type="submit">Create Article</button>
+    </form>
+
+</body>
+</html>
+
+
