@@ -11,11 +11,25 @@
 </head>
 <body>    
     <!-- This is the home page title and the author name -->
-    <h1>Adventures In Code</h1>
+    <!-- <h1>Adventures In Code</h1>
     <h3>a beginner's journey</h3>
     <h4><i><b>Michelle Beth</b></i></h4>
-    <br>
+    <br> -->
 
+    <h2>Settings</h2>
+    <table>
+        <tbody>
+            <% settings.forEach(setting => { %>
+                <tr>
+                    <td class="setting"><strong><%= setting.setting_title %></strong></td>
+                    <td class="setting"><strong><%= setting.setting_subtitle %></strong></td>
+                    <td class="setting"><strong><%= setting.setting_author_name %></strong></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+    <a class="button" href="/author/settings">Settings</a>
 
     <h2>Draft Articles</h2>
     <table>

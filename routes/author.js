@@ -13,23 +13,30 @@ const { format } = require('date-fns');
 // Define the articles variable here at a higher scope
 // let articles = [];
 
-
 router.get("/home", (req, res, next) => {
-  global.db.all("SELECT * FROM existArticle", function (err, rows) {
+  global.db.all("SELECT setting_title, setting_subtitle, setting_author_name FROM userSetting", function (err, rows) {
     if (err) {
       return next(err);
     } else {
-      const articles = rows.map(article => {
-        return {
-          ...article,
-          article_created: format(new Date(article.article_created), 'dd MMMM yyyy'),
-          article_last_modified: format(new Date(article.article_last_modified), 'dd MMMM yyyy, hh:mm:ss a')
-        };
+      const settings = rows;
+      global.db.all("SELECT * FROM existArticle", function (err, rows) {
+        if (err) {
+          return next(err);
+        } else {
+          const articles = rows.map(article => { 
+            return {
+              ...article,
+              article_created: format(new Date(article.article_created), 'dd MMMM yyyy'),
+              article_last_modified: format(new Date(article.article_last_modified), 'dd MMMM yyyy, hh:mm:ss a')
+            };
+          });
+          res.render('home', { articles: articles, settings: settings, format: format }); 
+        }
       });
-      res.render('home', { articles : articles, format : format}); 
     }
   });
 });
+
  
 
 
@@ -82,8 +89,52 @@ router.post("/submit-article/:id", (req, res, next) => {
 });
 
 
+router.get("/settings", (req, res, next) => {
+  // Query the database to fetch the specific edit based on the editId
+  global.db.get("SELECT * FROM userSetting ", (err, setting) => {
+    if (err) {
+      next(err);
+    } else if (!setting) {
+      res.status(404).send('Setting not found.');
+    } else {
+      res.render('settings', { setting });
+    }
+  });
+  console.log('setting page is working');
+});
 
 
+router.post("/submit-setting", (req, res, next) => {
+  //The editId variable stores the article ID that is extracted from the URL parameter ":id".
+  const {
+    setting_title,
+    setting_subtitle,
+    setting_author_name
+  } = req.body;
+
+  //update the database with the edited data
+  global.db.run(
+    "UPDATE userSetting SET setting_title = ?, setting_subtitle = ?, setting_author_name = ?",
+    [setting_title, setting_subtitle, setting_author_name],
+    function (err) {
+      if (err) {
+        next(err); // Send the error on to the error handler
+      } else {
+        // fetch the updated data from the database
+        global.db.get("SELECT * FROM userSetting", (err, updatedSetting) => {
+          if (err) {
+            next(err);
+          } else {
+            // Render the home page with the updated setting
+            res.redirect('/author/home'); // Note: Pass the setting as an array to match the forEach loop in home.ejs
+            // res.redirect("/author/home"); // Redirect the user back to the "/home" page after the update
+          }
+        });
+      }
+    }
+  );
+  console.log("setting update is working");
+});
 
 ///////////////////////////////////////////// HELPERS ///////////////////////////////////////////
 
