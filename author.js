@@ -1,8 +1,10 @@
 
+
 const express = require("express");
 const router = express.Router();
 const assert = require('assert');
 const { format } = require('date-fns');
+
 
 
 router.get("/home", (req, res, next) => {
@@ -11,28 +13,50 @@ router.get("/home", (req, res, next) => {
       return next(err);
     } else {
       const settings = rows;
-      global.db.all("SELECT * FROM existArticle", function (err, rows) {
+
+      // Retrieve draft articles (where is_published is 0)
+      global.db.all("SELECT * FROM existArticle WHERE is_published = 0", function (err, draftRows) {
         if (err) {
           return next(err);
         } else {
-          const articles = rows.map(article => { 
+          const draftArticles = draftRows.map(article => {
             return {
               ...article,
               article_created: format(new Date(article.article_created), 'dd MMMM yyyy'),
               article_last_modified: format(new Date(article.article_last_modified), 'dd MMMM yyyy, hh:mm:ss a')
             };
           });
-          res.render('home', { articles: articles, settings: settings, format: format }); 
+
+          // Retrieve published articles (where is_published is 1)
+          global.db.all("SELECT * FROM existArticle WHERE is_published = 1", function (err, publishedRows) {
+            if (err) {
+              return next(err);
+            } else {
+              const publishedArticles = publishedRows.map(article => {
+                return {
+                  ...article,
+                  article_created: format(new Date(article.article_created), 'dd MMMM yyyy'),
+                  article_last_modified: format(new Date(article.article_last_modified), 'dd MMMM yyyy, hh:mm:ss a')
+                };
+              });
+
+              res.render('home', { draftArticles: draftArticles, publishedArticles: publishedArticles, settings: settings, format: format });
+            }
+          });
         }
       });
     }
   });
 });
 
- 
+
+
+
 
 router.get("/edit-article/:id", (req, res, next) => {
   const editId = req.params.id; // Retrieve the edit ID from the URL parameter
+
+  
   // If editId is "new", render the template with emtpy inputs for a new article
   if (editId == 'new') {
     const newArticle = {
@@ -47,6 +71,9 @@ router.get("/edit-article/:id", (req, res, next) => {
     return res.render('edit-article', { article: newArticle });
   }
   
+  
+  
+  
   // Query the database to fetch the specific edit based on the editId
   global.db.get("SELECT * FROM existArticle WHERE article_id = ?", [editId], (err, edit) => {
     if (err) {
@@ -60,6 +87,10 @@ router.get("/edit-article/:id", (req, res, next) => {
       res.render('edit-article', { article: edit });
     }
   });
+
+
+
+
   console.log('edit article page is working');
 });
 
@@ -73,10 +104,12 @@ router.post("/submit-article/:id", (req, res, next) => {
     article_action
   } = req.body;
 
+
   // Get the current date and time
   const currentDate = new Date();
   const article_created = format(currentDate, 'dd MMMM yyyy');
   const article_last_modified = format(currentDate, 'dd MMMM yyyy, hh:mm:ss a');
+  
   
   // If editId is "new", it means we are inserting a new article.
   if (editId === 'new') {
@@ -109,9 +142,41 @@ router.post("/submit-article/:id", (req, res, next) => {
       }
     );
   }
+
   console.log("submit is working");
 });
 
+
+
+router.delete("/delete-article/:id", (req, res, next) => {
+  const articleId = req.params.id; // Retrieve the article ID from the URL parameter.
+
+  // Delete the article from the database.
+  global.db.run("DELETE FROM existArticle WHERE article_id = ?", [articleId], function (err) {
+    if (err) {
+      next(err); // Send the error on to the error handler
+    } else {
+      // Respond with a success status (HTTP 204 - No Content) after the deletion.
+      res.sendStatus(204);
+    }
+  });
+});
+
+
+// Add a new route to publish an article
+router.put("/publish-article/:id", (req, res, next) => {
+  const articleId = req.params.id; // Retrieve the article ID from the URL parameter.
+
+  // Update the article's "is_published" column to 1 (published)
+  global.db.run("UPDATE existArticle SET is_published = 1 WHERE article_id = ?", [articleId], function (err) {
+    if (err) {
+      next(err); // Send the error on to the error handler
+    } else {
+      // Respond with a success status (HTTP 204 - No Content) after the update.
+      res.sendStatus(204);
+    }
+  });
+});
 
 
 

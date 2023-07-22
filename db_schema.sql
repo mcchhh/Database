@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS existArticle (
     article_subtitle TEXT NOT NULL,
     article_created TEXT NOT NULL,   -- change data type to TEXT from INT 
     article_last_modified TEXT NOT NULL,    -- change data type to TEXT from INT 
-    article_action TEXT NOT NULL
+    article_action TEXT NOT NULL,
+    is_published INTEGER DEFAULT 0  -- Boolean function 
     -- edit_id INTEGER, -- Foreign key reference to editArticle table 
     -- FOREIGN KEY (edit_id) REFERENCES editArticle(edit_id) -- Add foreign key constraint
 );

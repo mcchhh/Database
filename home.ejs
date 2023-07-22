@@ -40,7 +40,7 @@
             </tr>
         </thead>
         <tbody>
-          <% articles.forEach(article => { %>
+          <% draftArticles.forEach((article) => { %>
             <tr>
               <!-- <td><%= article.article_id %></td> -->
               <td><%= article.article_title %></td>
@@ -50,19 +50,88 @@
               <td>
                 <!-- <a class="button" href="<%= '/edit-article/'+ article.article_id %>">Edit</a> -->
                 <a class="button" href="/author/edit-article/<%= article.article_id %>">Edit</a>
-
-                <a class="button" href="<%= '/delete/' + article.article_id %>">Delete</a>
-                <a class="button" href="<%= '/publish/' + article.article_id %>">Publish</a>
+                <button type="button" class="button" onclick="deleteArticle('<%= article.article_id %>')">Delete</button>
+                <button type="button" class="button" onclick="publishArticle('<%= article.article_id %>')">Publish</button>
               </td>
             </tr>
           <% }); %>
         </tbody>
+
+        <!-- The use of javascript in the ejs file for the delete button -->
+        <script>
+          function deleteArticle(articleId) {
+            if (confirm("Are you sure you want to delete this article?")) {
+              // Send a DELETE request to the server using fetch API
+              fetch(`/author/delete-article/${articleId}`, {
+                method: "DELETE",
+              })
+                .then(response => {
+                  if (response.ok) {
+                    // If the deletion was successful, reload the page to reflect the changes
+                    location.reload();
+                  } else {
+                    alert("Failed to delete the article. Please try again later.");
+                  }
+                })
+                .catch(error => {
+                  console.error("Error occurred during delete request:", error);
+                });
+            }
+          }
+        </script>
+
+
+        <!-- The use of javascript in the ejs file for the publish button -->
+        <script>
+          function publishArticle(articleId) {
+            fetch(`/author/publish-article/${articleId}`, {
+              method: "PUT",
+            })
+              .then(response => {
+                if (response.ok) {
+                  // If the publication was successful, reload the page to reflect the changes
+                  location.reload();
+                } else {
+                  alert("Failed to publish the article. Please try again later.");
+                }
+              })
+              .catch(error => {
+                console.error("Error occurred during publish request:", error);
+              });
+          }
+        </script>
 
     </table>
 
     <form action="/author/submit-article>" method="POST">
       <a class="button" href="/author/edit-article/new">Create an article</a>
       </form>
+
+
+      <h2>Published Articles</h2>
+    <table>
+        <thead>
+            <tr>
+              <!-- <th>ID</th> -->
+              <th>Title</th>
+              <th>Subtitle</th>
+              <th>Created</th>
+              <th>Last modified</th>
+              <!-- No need to display the "Actions" column for published articles -->
+            </tr>
+        </thead>
+        <tbody>
+          <% publishedArticles.forEach((article) => { %>
+            <tr>
+              <!-- <td><%= article.article_id %></td> -->
+              <td><%= article.article_title %></td>
+              <td><%= article.article_subtitle %></td>
+              <td><%= article.article_created %></td>
+              <td><%= article.article_last_modified %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+    </table>
 
 </body>
 </html>
