@@ -1,17 +1,9 @@
 
-/**
- * These are example routes for user management
- * This shows how to correctly structure your routes for the project
- */
-
 const express = require("express");
 const router = express.Router();
 const assert = require('assert');
 const { format } = require('date-fns');
 
-
-// Define the articles variable here at a higher scope
-// let articles = [];
 
 router.get("/home", (req, res, next) => {
   global.db.all("SELECT setting_title, setting_subtitle, setting_author_name FROM userSetting", function (err, rows) {
@@ -39,12 +31,8 @@ router.get("/home", (req, res, next) => {
 
  
 
-
-
 router.get("/edit-article/:id", (req, res, next) => {
   const editId = req.params.id; // Retrieve the edit ID from the URL parameter
-
-  
   // If editId is "new", render the template with emtpy inputs for a new article
   if (editId == 'new') {
     const newArticle = {
@@ -59,9 +47,6 @@ router.get("/edit-article/:id", (req, res, next) => {
     return res.render('edit-article', { article: newArticle });
   }
   
-  
-  
-  
   // Query the database to fetch the specific edit based on the editId
   global.db.get("SELECT * FROM existArticle WHERE article_id = ?", [editId], (err, edit) => {
     if (err) {
@@ -75,10 +60,6 @@ router.get("/edit-article/:id", (req, res, next) => {
       res.render('edit-article', { article: edit });
     }
   });
-
-
-
-
   console.log('edit article page is working');
 });
 
@@ -92,12 +73,10 @@ router.post("/submit-article/:id", (req, res, next) => {
     article_action
   } = req.body;
 
-
   // Get the current date and time
   const currentDate = new Date();
   const article_created = format(currentDate, 'dd MMMM yyyy');
   const article_last_modified = format(currentDate, 'dd MMMM yyyy, hh:mm:ss a');
-  
   
   // If editId is "new", it means we are inserting a new article.
   if (editId === 'new') {
@@ -130,42 +109,8 @@ router.post("/submit-article/:id", (req, res, next) => {
       }
     );
   }
-
   console.log("submit is working");
 });
-
-
-
-
-// router.post("/created-article", (req, res, next) => {
-//   const {
-//     article_title,
-//     article_subtitle,
-//     article_action
-//   } = req.body;
-
-//   // Get the current date and time
-//   const currentDate = new Date();
-//   const article_created = format(currentDate, 'dd MMMM yyyy');
-//   const article_last_modified = format(currentDate, 'dd MMMM yyyy, hh:mm:ss a');
-
-//   // Update the database with the new article data
-//   global.db.run(
-//     "INSERT INTO existArticle (article_title, article_subtitle, article_created, article_last_modified, article_action) VALUES (?, ?, ?, ?, ?)",
-//     [article_title, article_subtitle, article_created, article_last_modified, article_action],
-//     function (err) {
-//       if (err) {
-//         next(err); // Send the error on to the error handler
-//       } else {
-//         // Redirect the user back to the "/home" page after the update
-//         res.redirect("/author/home");
-//       }
-//     }
-//   );
-//   console.log("created is working");
-// });
-
-
 
 
 
