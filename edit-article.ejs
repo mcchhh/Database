@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Article</title>
+</head>
+<body>
+  <h2>Edit Article</h2>
+  <!--Check that the "article.article_id" in the "edit-article.ejs" template is a valid 
+    value and exists in the database. If the article ID is not valid or doesn't exist, 
+    the server will not be able to find the corresponding article to update.-->
+  <form action="/author/submit-article/<%= article.article_id %>" method="post">
+
+    <table>
+      <tr>
+        <td><strong>Created:</strong></td>
+        <td><%= article.article_created %></td>
+    </tr>
+
+    <tr>
+      <td><strong>Last Modified:</strong></td>
+      <td><%= article.article_last_modified %></td>
+    </tr>
+
+    <tr>
+      <td><strong>Title:</strong></td>
+      <td>
+        <input type="text" name="article_title" value="<%= article.article_title %>">
+      </td>
+    </tr>
+      
+      <tr>
+          <td><strong>Subtitle:</strong></td>
+          <td>
+            <input type="text" name="article_subtitle" value="<%= article.article_subtitle %>">
+          </td>
+      </tr>
+      <tr>
+        <td><strong>Body:</strong></td>  
+        <td>
+          <input type="text" name="article_action" value="<%= article.article_action %>">
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Status:</strong></td>
+        
+      </tr>
+  </table>
+
+    <input type="submit" value="Save Changes">
+  </form>
+
+</body>
+</html>
