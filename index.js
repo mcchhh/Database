@@ -6,6 +6,7 @@ const port = 3000;
 const sqlite3 = require('sqlite3').verbose();
 const { format } = require('date-fns');
 
+
 //items in the global namespace are accessible throught out the node application
 global.db = new sqlite3.Database('./database.db',function(err){
   if(err){
@@ -19,6 +20,7 @@ global.db = new sqlite3.Database('./database.db',function(err){
 
 app.use(express.json()); //Used to parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
+
 
 // app.use(express.urlencoded()); //Parse URL-encoded bodies
 
@@ -77,14 +79,14 @@ db.all(" SELECT * FROM userSetting", function(err,data){
 // });
 
 const authorHome = require('./routes/author');
-const reader = require('./routes/reader');
+const readerRouter = require('./routes/reader');
 
 
 
 //this adds all the userRoutes to the app under the path /user
 // ROUTER AND THE PATH TO BE USED ARE BELOW 
 app.use('/author', authorHome);
-app.use('/reader', reader);
+app.use('/reader', readerRouter);
 
 //set the app to use ejs for rendering
 app.set('view engine', 'ejs');

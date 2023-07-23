@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reader Articles</title>
+</head>
+<body>
+    
+
+
+    <table>
+        <thead>
+            <tr>
+                <!-- <th>ID</th> -->
+                <th>Title</th>
+                <th>Subtitle</th>
+                <th>Created</th>
+                <th>Last modified</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            <h2><%= article.article_title %></h2>
+            <p><%= article.article_subtitle %></p>
+            <p>Created: <%= article.article_created %></p>
+            <p>Last Modified: <%= article.article_last_modified %></p>
+            <p>Action: <%= article.article_action %></p>
+
+            <table> 
+                <thread> 
+                    <tr>
+
+                        <td><a href="/reader/reading-article/<%= article.article_id %>"><%= article.article_subtitle %></td></a>
+                    
+                     </tr>
+                </thread>
+        </tbody>
+    </table>
+    
+    <form action="/reading-article/<%= article.article_id %>" method="post">
+        <button type="submit">Create a new user record</button>
+    </form>
+</body>
+</html>
