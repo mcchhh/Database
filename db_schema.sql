@@ -17,9 +17,8 @@ CREATE TABLE IF NOT EXISTS existArticle (
     article_created TEXT NOT NULL,   -- change data type to TEXT from INT 
     article_last_modified TEXT NOT NULL,    -- change data type to TEXT from INT 
     article_action TEXT NOT NULL,
-    is_published INTEGER DEFAULT 0  -- Boolean function 
-    -- edit_id INTEGER, -- Foreign key reference to editArticle table 
-    -- FOREIGN KEY (edit_id) REFERENCES editArticle(edit_id) -- Add foreign key constraint
+    is_published INTEGER DEFAULT 0,   -- Boolean function 
+    comments TEXT  -- add a new column for storing comments as a TEXT field 
 );
 
 CREATE TABLE IF NOT EXISTS userSetting (

@@ -7,42 +7,60 @@
     <title>Reader Articles</title>
 </head>
 <body>
-    
+
+    <% if (setting) { %>
+        <div class="setting-box">
+          <h3><%= setting.setting_title %></h3>
+          <p><%= setting.setting_subtitle %></p>
+          <p>Author: <%= setting.setting_author_name %></p>
+        </div>
+    <% } %>
 
 
     <table>
         <thead>
             <tr>
-                <!-- <th>ID</th> -->
-                <th>Title</th>
-                <th>Subtitle</th>
-                <th>Created</th>
-                <th>Last modified</th>
-                <th>Actions</th>
+                <th>Title: </th>
+                <td><h2><%= article.article_title %></h2></td>
             </tr>
+
+            <tr>
+                <th>Subtitle: </th>
+                <td> <p><%= article.article_subtitle %></p></td>
+            </tr>
+
+            <tr>
+                <th>Body: </th>
+                <td><p><%= article.article_action %></p></td>
+            </tr>
+
         </thead>
         <tbody>
-
-
-            <h2><%= article.article_title %></h2>
-            <p><%= article.article_subtitle %></p>
-            <p>Created: <%= article.article_created %></p>
-            <p>Last Modified: <%= article.article_last_modified %></p>
-            <p>Action: <%= article.article_action %></p>
-
-            <table> 
-                <thread> 
-                    <tr>
-
-                        <td><a href="/reader/reading-article/<%= article.article_id %>"><%= article.article_subtitle %></td></a>
-                    
-                     </tr>
-                </thread>
-        </tbody>
+        
     </table>
-    
-    <form action="/reading-article/<%= article.article_id %>" method="post">
-        <button type="submit">Create a new user record</button>
+
+
+    <!-- Existing comments section -->
+<h3>Comments</h3>
+<% if (article.comments && article.comments.length > 0) { %>
+  <ul>
+    <% const commentsArray = article.comments.split(','); %>
+    <% commentsArray.forEach(comment => { %>
+      <li><%= comment.trim() %></li>
+    <% }); %>
+  </ul>
+<% } else { %>
+  <p>No comments yet.</p>
+<% } %>
+
+
+    <!-- Comment Box section -->
+    <h3>Add a Comment</h3>
+    <form action="/reader/reading-article/<%= article.article_id %>/add-comment" method="post">
+        <textarea name="comment" rows="4" cols="50" placeholder="Enter your comment here"></textarea>
+        <br>
+        <button type="submit">Submit Comment</button>
     </form>
+
 </body>
 </html>

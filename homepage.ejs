@@ -20,38 +20,19 @@
   <% } %>
 
 
-
-
   <div class="article-gallery">
     <% articles.forEach(article => { %>
-      <% if (article.is_published) { %> <!-- Check if the article is published -->
-        <a href="/reader/reading-article/<%= article.article_id %>">
-          <table>
-            <tr>
-              <td><h3><%= article.article_title %></h3></td>
-              <td><p><%= article.article_subtitle %></p></td>
-              <td><p>Last Modified: <%= article.article_last_modified %></p></td>
-            </tr>
-          </table>
+      <% if (article.is_published) { %>
+        <a href="/reader/reading-article/<%= article.article_id %>" class="article-box"> <!-- Add class="article-box" here -->
+          <div>
+            <h3><%= article.article_title %></h3>
+            <p><%= article.article_subtitle %></p>
+            <p>Last Modified: <%= article.article_last_modified %></p>
+          </div>
         </a>
       <% } %>
     <% }); %>
   </div>
-
-
-  <!-- Add this script at the bottom of the homepage.ejs file, before the closing </body> tag -->
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function() {
-    // Attach click event handler to all elements with class "clickable-table"
-    $(".clickable-table").on("click", function() {
-      // Get the URL from the data-href attribute
-      var url = $(this).data("href");
-      // Navigate to the specified URL
-      window.location.href = url;
-    });
-  });
-</script> -->
  
 
 </body>
