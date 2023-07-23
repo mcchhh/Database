@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS existArticle (
     article_last_modified TEXT NOT NULL,    -- change data type to TEXT from INT 
     article_action TEXT NOT NULL,
     is_published INTEGER DEFAULT 0,   -- Boolean function 
-    comments TEXT  -- add a new column for storing comments as a TEXT field 
+    comments TEXT,  -- add a new column for storing comments as a TEXT field 
+    comment_date TEXT  --add a new column for storing the data and time of each comment
 );
 
 CREATE TABLE IF NOT EXISTS userSetting (
