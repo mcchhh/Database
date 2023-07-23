@@ -68,7 +68,11 @@ router.get("/reading-article/:id", (req, res, next) => {
 router.post("/reading-article/:id/add-comment", (req, res, next) => {
   const readingId = req.params.id;
   const newComment = req.body.comment;
+  //const commentDate = format(new Date(), 'dd MMMM yyyy'); // Get the current date and time and format it using ISO format
+  const commentDate = format(new Date(), 'dd MMMM yyyy, hh:mm:ss a');
 
+
+  
   // Fetch the userSetting data from the database
   global.db.get("SELECT * FROM userSetting", function (err, setting) {
     if (err) {
@@ -80,17 +84,34 @@ router.post("/reading-article/:id/add-comment", (req, res, next) => {
         } else if (!reading) {
           res.status(404).send('Article not found or not published.');
         } else {
-          // Get the existing comments as a comma-separated string
-          let existingComments = reading.comments || '';
+
+
+
+          // Get the existing comments as an array
+          let existingComments = reading.comments ? reading.comments.split(',') : [];
+
+          // Append the new comment and its date to the existing comments array
+          existingComments.push(`${newComment} (${commentDate})`);
+
+          // Join the comments array back to a comma-separated string
+          existingComments = existingComments.join(',');
+
+
+          // // Get the existing comments as a comma-separated string
+          // let existingComments = reading.comments || 'dd MMMM yyyy, HH:mm:ss';
     
-          // Append the new comment to the existing comments
-          if (existingComments) {
-            existingComments += `, ${newComment}`;
-          } else {
-            existingComments = newComment;
-          }
+          // // Append the new comment to the existing comments along with the date and time
+          // if (existingComments) {
+          //   existingComments += `, ${newComment} (${commentDate})`;
+          // } else {
+          //   existingComments = `${newComment} (${commentDate})`;
+          // }
     
-          global.db.run("UPDATE existArticle SET comments = ? WHERE article_id = ?", [existingComments, readingId], function (err) {
+
+
+
+
+          global.db.run("UPDATE existArticle SET comments = ?, comment_date = ? WHERE article_id = ?", [existingComments, commentDate, readingId], function (err) {
             if (err) {
               next(err);
             } else {
@@ -102,7 +123,7 @@ router.post("/reading-article/:id/add-comment", (req, res, next) => {
                   res.status(404).send('Article not found or not published.');
                 } else {
                   // Render the reading-articles template with the updated article containing the new comments
-                  res.render('reading-articles', { setting, article: updatedArticle }); // Fix here: Use 'setting' instead of 'reading'
+                  res.render('reading-articles', { setting, article: updatedArticle });
                 }
               });
             }
@@ -117,13 +138,15 @@ router.post("/reading-article/:id/add-comment", (req, res, next) => {
 
 
 
+
+// BELOW IS WITHOUT TIME AND DATE 
+
 // router.post("/reading-article/:id/add-comment", (req, res, next) => {
 //   const readingId = req.params.id;
 //   const newComment = req.body.comment;
 
-
-//    // Fetch the userSetting data from the database
-//    global.db.get("SELECT * FROM userSetting", function (err, setting) {
+//   // Fetch the userSetting data from the database
+//   global.db.get("SELECT * FROM userSetting", function (err, setting) {
 //     if (err) {
 //       next(err); // Send the error on to the error handler
 //     } else {
@@ -155,7 +178,7 @@ router.post("/reading-article/:id/add-comment", (req, res, next) => {
 //                   res.status(404).send('Article not found or not published.');
 //                 } else {
 //                   // Render the reading-articles template with the updated article containing the new comments
-//                   res.render('reading-articles', { setting: reading, article: updatedArticle });
+//                   res.render('reading-articles', { setting, article: updatedArticle }); // Fix here: Use 'setting' instead of 'reading'
 //                 }
 //               });
 //             }
@@ -163,9 +186,8 @@ router.post("/reading-article/:id/add-comment", (req, res, next) => {
 //         }
 //       });
 //     }
+//   });
 // });
-
-
 
 
 
