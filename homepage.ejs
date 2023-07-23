@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/homepage.css">
+    <title>Reader Home</title>
+</head>
+<body>
+
+  <h1>Reader Home</h1>
+
+  <% if (setting) { %>
+    <div class="setting-box">
+      <h3><%= setting.setting_title %></h3>
+      <p><%= setting.setting_subtitle %></p>
+      <p>Author: <%= setting.setting_author_name %></p>
+    </div>
+  <% } %>
+
+
+
+
+  <div class="article-gallery">
+    <% articles.forEach(article => { %>
+      <% if (article.is_published) { %> <!-- Check if the article is published -->
+        <a href="/reader/reading-article/<%= article.article_id %>">
+          <table>
+            <tr>
+              <td><h3><%= article.article_title %></h3></td>
+              <td><p><%= article.article_subtitle %></p></td>
+              <td><p>Last Modified: <%= article.article_last_modified %></p></td>
+            </tr>
+          </table>
+        </a>
+      <% } %>
+    <% }); %>
+  </div>
+
+
+  <!-- Add this script at the bottom of the homepage.ejs file, before the closing </body> tag -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Attach click event handler to all elements with class "clickable-table"
+    $(".clickable-table").on("click", function() {
+      // Get the URL from the data-href attribute
+      var url = $(this).data("href");
+      // Navigate to the specified URL
+      window.location.href = url;
+    });
+  });
+</script> -->
+ 
+
+</body>
+</html> 
